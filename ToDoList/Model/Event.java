@@ -2,8 +2,8 @@ package ToDoList.Model;
 
 public class Event
 {
-    String eventMessage;
-    boolean active;
+    private String eventMessage;
+    private boolean active;
 
     public Event(String eventMessage)
     {

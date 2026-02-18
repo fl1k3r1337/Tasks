@@ -21,14 +21,12 @@ public class EventList
         eventList.add(event);
     }
 
-    public boolean removeEvent(int index)
+    public void removeEvent(int index)
     {
         if (index >= 0 && index <= eventList.size())
         {
             eventList.remove(index);
-            return true;
         }
-        return false;
     }
 
 

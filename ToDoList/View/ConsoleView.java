@@ -8,17 +8,6 @@ import java.util.Scanner;
 
 public class ConsoleView
 {
-    // public void switcher(int a)
-    // {
-    //     switch (a)
-    //     {
-    //         case 1:
-
-    //         case 2:
-
-    //     }
-    // }
-
     public static void main(String[] args)
     {
         UserControl control = new UserControl();
@@ -93,7 +82,7 @@ public class ConsoleView
             for (int i = 0; i < events.size(); i++)
             {
                 Event event = events.get(i);
-                System.out.println(i + 1 + " " + event.getMessage());
+                System.out.println(i + 1 + ". " + event.getMessage());
             }
         }
         waitForEnter(scanner);
