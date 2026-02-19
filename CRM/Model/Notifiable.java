@@ -1,4 +1,4 @@
-package CRM.CRM.Model;
+package CRM.Model;
 
 interface Notifiable
 {

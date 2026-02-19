@@ -1,4 +1,4 @@
-package CRM.CRM.Model;
+package CRM.Model;
 
 public class Deal
 {
@@ -49,8 +49,11 @@ public class Deal
         return this.value;
     }
 
-    public void changeStatus(String newStatus)
+    public boolean changeStatus(String newStatus)
     {
+        if (this.status.equals(newStatus))
+            return false;
         this.status = newStatus;
+        return true;
     }
 }
