@@ -1,4 +1,4 @@
-package ToDoList.Control;
+package ToDoList.Controller;
 
 import ToDoList.Model.Event;
 import ToDoList.Model.EventList;

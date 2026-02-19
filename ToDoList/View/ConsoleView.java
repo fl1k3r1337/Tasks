@@ -1,6 +1,6 @@
 package ToDoList.View;
 
-import ToDoList.Control.UserControl;
+import ToDoList.Controller.UserControl;
 import ToDoList.Model.Event;
 
 import java.util.ArrayList;
