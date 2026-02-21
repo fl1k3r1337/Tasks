@@ -1,9 +1,5 @@
 package CRM.View;
 
-import CRM.Controller.CrmService;
-import CRM.Model.Client;
-import CRM.Model.Deal;
-import CRM.Model.Employee;
 
 import java.util.Scanner;
 
@@ -30,20 +26,6 @@ public class ConsoleManager
     public void printExitMessage()
     {
         System.out.println("До свидания!");
-    }
-
-    public Deal printAddDealMessage(int id)
-    {
-
-        Client client = CrmService.getClientInformation(scanner);
-
-        requireInfo("Введите имя, фамилию и комиссию (в формате 0.5) Работника");
-        Employee employee = CrmService.getEmployeeInformation(scanner);
-
-        requireInfo("Введите сумму сделки:");
-        int value = CrmService.getValueInformation(scanner);
-
-        return new Deal(client, employee, value, id);
     }
 
     public void printSuccess(String message) {System.out.println(message);}
@@ -93,6 +75,14 @@ public class ConsoleManager
         scanner.nextLine();
 
         return id;
+    }
+
+    public int getCommandFromUser()
+    {
+        int command = scanner.nextInt();
+        scanner.nextLine(); //убрать \n
+
+        return command;
     }
 
 }

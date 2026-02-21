@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 
 public class CrmService {
@@ -67,27 +66,50 @@ public class CrmService {
         console.printSuccess("Сделки успешно отсортированы по статусам");
     }
 
-    public void calculateCommission(Scanner scanner)
+    public void calculateCommission()
     {
         // принимает сделку и считает комиссию (сумма * ставка сотрудника)
         int id = console.getDealIdFromUser();
 
-        Deal deal = deals.get(id - 1);
+        Deal deal = findDealById(id);
+        if (deal == null)
+        {
+            console.printError("Сделка с ID " + id + " не найдена");
+            return;
+        }
 
         console.printSuccess(String.valueOf(deal.getCommission()));
     }
 
-    public void changeStatus(Scanner scanner)
+    private Deal findDealById(int id) {
+        for (Deal deal : deals) {
+            if (deal.getId() == id) {
+                return deal;
+            }
+        }
+        return null;
+    }
+
+    public void changeStatus()
     {
         // меняет статус конкретной сделки (и через нее триггерится уведомление)
         console.requireInfo("Введите id сделки:");
         int id = this.console.getIdFromUser();
 
+        Deal deal = findDealById(id);
+        if (deal == null)
+        {
+            console.printError("Сделка с ID " + id + " не найдена");
+            return;
+        }
+
         console.requireInfo("Введите новый статус сделки " + id + " (Выберите из PENDING, CLOSED, CANCELED):");
         String status = console.getStringFromUser();
-
-        Deal deal = deals.get(id - 1);
-        //TODO: добавить проверку на корректность id
+        if (!statuses.containsKey(status))
+        {
+            console.printError("Недопустимый статус! Доступны: PENDING, CLOSED, CANCELED");
+            return;
+        }
 
         if (deal.changeStatus(status))
         {
@@ -118,7 +140,7 @@ public class CrmService {
         return this.running;
     }
 
-    public void handleUserCommands(int command, Scanner scanner)
+    public void handleUserCommands(int command)
     {
         switch (command)
         {
@@ -135,11 +157,11 @@ public class CrmService {
                 break;
 
             case 4:
-                changeStatus(scanner);
+                changeStatus();
                 break;
 
             case 5:
-                calculateCommission(scanner);
+                calculateCommission();
                 break;
 
             case 0:
@@ -148,69 +170,16 @@ public class CrmService {
         }
     }
 
-    public static Client getClientInformation(Scanner scanner)
-    {
-        String data = scanner.nextLine();
-        String[] info = data.split(" ");
-
-        return new Client(info[0], info[1]);
-    }
-
-    public static Employee getEmployeeInformation(Scanner scanner)
-    {
-        String data = scanner.nextLine();
-        String[] info = data.split(" ");
-
-        return new Employee(info[0], info[1], Float.parseFloat(info[2]));
-    }
-
-    public static int getValueInformation(Scanner scanner)
-    {
-        int value = scanner.nextInt();
-        scanner.nextLine(); // убрать \n
-        return value;
-    }
 
     public static void main(String[] args)
     {
-        Scanner scanner = new Scanner(System.in);
         CrmService CRM = new CrmService(new ConsoleManager());
-
-
 
         while (CRM.isRunning())
         {
             CRM.console.printMenu();
-            int command = scanner.nextInt();
-            scanner.nextLine(); // убрать \n
-            CRM.handleUserCommands(command, scanner);
+            int command = CRM.console.getCommandFromUser();
+            CRM.handleUserCommands(command);
         }
-
-
-
-
-
-//        Client client1 = new Client("Иван", "Иванов");
-//        Employee employee1 = new Employee("Сергей", "Сидоров", 0.2f);
-//        Deal deal1 = new Deal(client1, employee1, 100000, 124);
-//
-//        Client client2 = new Client("Артем", "Вознесенский");
-//        Employee employee2 = new Employee("Олег", "Нечипоренко", 0.3f);
-//        Deal deal2 = new Deal(client2, employee2, 11500, 125);
-//
-//        CrmService CRM = new CrmService();
-//        CRM.addDeal(deal1);
-//        CRM.addDeal(deal2);
-//
-//        System.out.println(CRM.calculateCommission(CRM.deals.get(0)));
-//        CRM.changeStatus(CRM.deals.get(0), "CANCELED");
-//        CRM.changeStatus(CRM.deals.get(0), "PENDING");
-//        CRM.changeStatus(CRM.deals.get(0), "CLOSED");
-//
-//        CRM.printAllDeals();
-//
-//        CRM.sortByStatus();
-//
-//        CRM.printAllDeals();
     }
 }
