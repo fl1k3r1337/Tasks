@@ -8,17 +8,24 @@ import java.util.Scanner;
 
 public class ConsoleView
 {
+    private Scanner scanner;
+
+    public ConsoleView()
+    {
+        this.scanner = new Scanner(System.in);
+    }
+
     public static void main(String[] args)
     {
         UserControl control = new UserControl();
-        Scanner scanner = new Scanner(System.in);
+        ConsoleView console = new ConsoleView();
         boolean running = true;
 
         while (running)
         {
             printMenu();
 
-            String input = scanner.nextLine().trim();
+            String input = console.scanner.nextLine().trim();
             if (input.isEmpty())
                 continue;
 
@@ -33,15 +40,27 @@ public class ConsoleView
                         break;
 
                     case 1:
-                        printEvents(control.getEvents(), scanner);
+                        console.printEvents(control.getEvents());
                         break;
 
                     case 2:
-                        addEvent(control, scanner);
+                        console.addEvent(control);
                         break;
 
                     case 3:
-                        deleteEvent(control, scanner);
+                        console.deleteEvent(control);
+                        break;
+
+                    case 4:
+                        console.markAsDone(control);
+                        break;
+
+                    case 5:
+                        console.printAllActiveTasks(control);
+                        break;
+
+                    case 6:
+                        console.printAllDoneTasks(control);
                         break;
 
                     default:
@@ -56,12 +75,12 @@ public class ConsoleView
 
         }
 
-        scanner.close();
+        console.scanner.close();
     }
 
     public static void printMenu()
     {
-        System.out.println("TODO List\n" +
+        System.out.println("\nTODO List\n" +
                 "1. Показать текущие задачи\n" +
                 "2. Добавить задачу\n" +
                 "3. Удалить задачу\n" +
@@ -72,7 +91,7 @@ public class ConsoleView
                 "Выберите необходимую функцию");
     }
 
-    public static void printEvents(ArrayList<Event> events, Scanner scanner)
+    public void printEvents(ArrayList<Event> events)
     {
         if (events.isEmpty())
             System.out.println("Список пуст");
@@ -82,29 +101,118 @@ public class ConsoleView
             for (int i = 0; i < events.size(); i++)
             {
                 Event event = events.get(i);
+                if (event.isActive())
+                    System.out.println(i + 1 + ". " + event.getMessage() + ". Статус: активна");
+                else
+                    System.out.println(i + 1 + ". " + event.getMessage() + ". Статус: выполнена");
+            }
+        }
+        waitForEnter();
+    }
+
+    public void addEvent(UserControl control)
+    {
+        System.out.println("Введите текст задачи");
+        String eventMessage = this.scanner.nextLine();
+
+        control.addEvent(eventMessage);
+        System.out.println("Задача \"" +  eventMessage + "\" добавлена\n");
+    }
+
+//    public void deleteEvent(UserControl control)
+//    {
+//        System.out.println("Введите номер задачи для удаления");
+//        int index = this.scanner.nextInt() - 1;
+//        this.scanner.nextLine();
+//        control.removeEvent(index);
+//    }
+
+    public void deleteEvent(UserControl control)
+    {
+        System.out.println("Введите номер задачи для удаления");
+
+        try
+        {
+            int index = this.scanner.nextInt() - 1;
+            this.scanner.nextLine();
+
+            String message = control.getMessageByIndex(index);
+            if (message != null)
+            {
+                control.removeEvent(index);
+                System.out.println("Задача \"" + message + "\" удалена");
+            }
+            else
+                System.out.println("Ошибка: задача с таким номером не найдена");
+        }
+        catch (Exception e)
+        {
+            System.out.println("Ошибка ввода");
+            this.scanner.nextLine();
+        }
+
+
+    }
+
+    private void waitForEnter() {
+        System.out.print("\nНажмите Enter для продолжения...");
+        this.scanner.nextLine();
+    }
+
+    public void markAsDone(UserControl control)
+    {
+        System.out.println("Введите номер задачи, которую вы хотите отметить как выполненную");
+
+        try
+        {
+            int index = this.scanner.nextInt() - 1;
+            this.scanner.nextLine();
+
+            String message = control.getMessageByIndex(index);
+            if (message != null)
+            {
+                control.markEventAsDone(index);
+                System.out.println("Задача \"" + message + "\" выполнена");
+            }
+            else
+                System.out.println("Ошибка: задача с таким номером не найдена");
+        }
+        catch (Exception e)
+        {
+            System.out.println("Ошибка ввода");
+            this.scanner.nextLine();
+        }
+    }
+
+    public void printAllActiveTasks(UserControl control)
+    {
+        ArrayList<Event> events = control.getEvents();
+        System.out.println("Список активных задач:\n");
+        for (int i = 0; i < events.size(); i++)
+        {
+            Event event = events.get(i);
+            if (event.isActive())
+            {
                 System.out.println(i + 1 + ". " + event.getMessage());
             }
         }
-        waitForEnter(scanner);
+
+        waitForEnter();
     }
 
-    public static void addEvent(UserControl control, Scanner scanner)
+    public void printAllDoneTasks(UserControl control)
     {
-        System.out.println("Введите текст задачи");
-        String eventMessage = scanner.nextLine();
+        ArrayList<Event> events = control.getEvents();
+        System.out.println("Список выполненных задач:\n");
+        for (int i = 0; i < events.size(); i++)
+        {
+            Event event = events.get(i);
+            if (!event.isActive())
+            {
+                System.out.println(i + 1 + ". " + event.getMessage());
+            }
+        }
 
-        control.addEvent(eventMessage);
-    }
-
-    public static void deleteEvent(UserControl control, Scanner scanner)
-    {
-        System.out.println("Введите номер задачи для удаления");
-        int index = scanner.nextInt() - 1;
-        control.removeEvent(index);
-    }
-
-    private static void waitForEnter(Scanner scanner) {
-        System.out.print("\nНажмите Enter для продолжения...");
-        scanner.nextLine();
+        waitForEnter();
     }
 }

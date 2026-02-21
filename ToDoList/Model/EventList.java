@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class EventList
 {
-    private final ArrayList<Event> eventList;
+    private ArrayList<Event> eventList;
 
     public EventList()
     {
@@ -23,12 +23,14 @@ public class EventList
 
     public void removeEvent(int index)
     {
-        if (index >= 0 && index <= eventList.size())
+        if (index >= 0 && index < eventList.size())
         {
             eventList.remove(index);
         }
     }
 
-
-
+    public void makeEventDoneByIndex(int index)
+    {
+        this.eventList.get(index).makeDone();
+    }
 }

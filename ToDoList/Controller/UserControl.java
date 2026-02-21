@@ -27,5 +27,18 @@ public class UserControl {
     {
         eventList.removeEvent(index);
     }
+
+    public void markEventAsDone(int index)
+    {
+        if (index >= 0 && index < eventList.getEventList().size())
+            eventList.makeEventDoneByIndex(index);
+    }
+
+    public String getMessageByIndex(int index)
+    {
+        if (index >= 0 && index < eventList.getEventList().size())
+            return this.eventList.getEventList().get(index).getMessage();
+        return null;
+    }
 }
 
